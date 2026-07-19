@@ -9,28 +9,35 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/token/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
-      const data = await response.json();
+  try {
+    const response = await fetch(`${API}/api/token/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
 
-      if (response.ok) {
-        localStorage.setItem("access", data.access);
-        localStorage.setItem("refresh", data.refresh);
-        router.push("/dashboard");
-      } else {
-        router.push("/dashboard");
-      }
-    } catch {
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
       router.push("/dashboard");
+    } else {
+      alert("Invalid username or password");
     }
-  };
+  } catch (error) {
+    console.error(error);
+    alert("Unable to connect to the server");
+  }
+};
+  
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.18),_transparent_24%),linear-gradient(135deg,_#020617_0%,_#030712_50%,_#01040d_100%)] px-4 text-slate-100">
