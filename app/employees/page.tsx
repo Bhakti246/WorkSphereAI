@@ -14,6 +14,9 @@ interface Employee {
 }
 
 export default function EmployeesPage() {
+
+  const API = process.env.NEXT_PUBLIC_API_URL;
+
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [search, setSearch] = useState("");
 
@@ -23,9 +26,11 @@ export default function EmployeesPage() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/employees/"
-      );
+      const response = await fetch(`${API}/api/employees/`, {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("access")}`,
+  },
+});
 
       const data = await response.json();
       setEmployees(data);
@@ -42,12 +47,13 @@ export default function EmployeesPage() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/employees/${id}/`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await
+       fetch(`${API}/api/employees/${id}/`, {
+  method: "DELETE",
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("access")}`,
+  },
+});
 
       if (response.ok) {
         alert("Employee deleted successfully");

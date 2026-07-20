@@ -36,13 +36,15 @@ export default function AddEmployee() {
       data.append("photo", photo);
     }
 
-    const response = await fetch(
-      "http://127.0.0.1:8000/api/employees/",
-      {
-        method: "POST",
-        body: data,
-      }
-    );
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
+const response = await fetch(`${API}/api/employees/`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("access")}`,
+  },
+  body: data,
+});
 
     if (response.ok) {
   alert("Employee Added Successfully");
